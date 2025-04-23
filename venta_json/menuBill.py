@@ -1,7 +1,7 @@
 from components import Menu,Valida
 from utilities import borrarPantalla,gotoxy
 from utilities import reset_color,red_color,green_color,yellow_color,blue_color,purple_color,cyan_color
-from clsJson import JsonFile
+from JsonFile import JsonFile
 from company  import Company
 from customer import RegularClient
 from sales import Sale
@@ -14,27 +14,183 @@ from functools import reduce
 path, _ = os.path.split(os.path.abspath(__file__))
 # Procesos de las Opciones del Menu Facturacion
 class CrudClients(ICrud):
-    def create():
-        pass
-    def update():
-        pass
-    def delete():
-        pass
-    def consult():
-        pass
+    def create(self):
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(green_color + "*"*90 + reset_color)
+        gotoxy(30, 2); print(blue_color + "Registro de Cliente" + reset_color)
+        dni = input("Ingrese DNI: ")
+        nombre = input("Ingrese Nombre: ")
+        apellido = input("Ingrese Apellido: ")
+        valor = input("Ingrese Valor: ")
+        try:
+            valor = float(valor)
+        except ValueError:
+            print("Valor debe ser numérico.")
+            return
+        json_file = JsonFile(path+'/archivos/clients.json')
+        clients = json_file.read()
+        if any(cli["dni"] == dni for cli in clients):
+            print("Cliente ya existe.")
+        else:
+            clients.append({"dni": dni, "nombre": nombre, "apellido": apellido, "valor": valor})
+            json_file.save(clients)
+            print("Cliente guardado correctamente.")
+        input("Presione una tecla para continuar...")
+
+    def update(self):
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(blue_color + "Actualizar Cliente" + reset_color)
+        dni = input("Ingrese DNI del cliente a actualizar: ")
+        json_file = JsonFile(path+'/archivos/clients.json')
+        clients = json_file.read()
+        for i, client in enumerate(clients):
+            if client["dni"] == dni:
+                nombre = input("Nuevo nombre (Enter para no cambiar): ")
+                apellido = input("Nuevo apellido (Enter para no cambiar): ")
+                valor = input("Nuevo valor (Enter para no cambiar): ")
+                if nombre:
+                    client["nombre"] = nombre
+                if apellido:
+                    client["apellido"] = apellido
+                if valor:
+                    try:
+                        client["valor"] = float(valor)
+                    except ValueError:
+                        print("Valor inválido. No se cambió.")
+                clients[i] = client
+                json_file.save(clients)
+                print("Cliente actualizado correctamente.")
+                break
+        else:
+            print("Cliente no encontrado.")
+        input("Presione una tecla para continuar...")
+
+    def delete(self):
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(red_color + "Eliminar Cliente" + reset_color)
+        dni = input("Ingrese DNI del cliente a eliminar: ")
+        json_file = JsonFile(path+'/archivos/clients.json')
+        clients = json_file.read()
+        for i, client in enumerate(clients):
+            if client["dni"] == dni:
+                confirm = input(f"¿Está seguro de eliminar a {client['nombre']} {client['apellido']}? (s/n): ").lower()
+                if confirm == "s":
+                    clients.pop(i)
+                    json_file.save(clients)
+                    print("Cliente eliminado correctamente.")
+                else:
+                    print("Operación cancelada.")
+                break
+        else:
+            print("Cliente no encontrado.")
+        input("Presione una tecla para continuar...")
+
+    def consult(self):
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(green_color + "Consulta de Clientes" + reset_color)
+        json_file = JsonFile(path+'/archivos/clients.json')
+        clients = json_file.read()
+        for cli in clients:
+            print(f"{cli['dni']}  {cli['nombre']}  {cli['apellido']}  Valor: {cli['valor']}")
+        input("Presione una tecla para continuar...")
+
 
 class CrudProducts(ICrud):
     def create(self):
-        pass
-    
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(green_color + "Registrar Producto" + reset_color)
+        id = input("ID Producto: ")
+        descripcion = input("Descripción: ")
+        precio = input("Precio: ")
+        stock = input("Stock: ")
+
+        try:
+            id = int(id)
+            precio = float(precio)
+            stock = int(stock)
+        except ValueError:
+            print("ID, precio o stock inválido.")
+            return
+
+        json_file = JsonFile(path+'/archivos/products.json')
+        productos = json_file.read()
+        if any(prod["id"] == id for prod in productos):
+            print("Producto ya existe.")
+        else:
+            productos.append({"id": id, "descripcion": descripcion, "precio": precio, "stock": stock})
+            json_file.save(productos)
+            print("Producto guardado correctamente.")
+        input("Presione una tecla para continuar...")
+
     def update(self):
-        pass
-    
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(blue_color + "Actualizar Producto" + reset_color)
+        id = input("Ingrese ID del producto a actualizar: ")
+        json_file = JsonFile(path+'/archivos/products.json')
+        productos = json_file.read()
+        for i, prod in enumerate(productos):
+            if prod["id"] == int(id):
+                descripcion = input("Nueva descripción (Enter para no cambiar): ")
+                precio = input("Nuevo precio (Enter para no cambiar): ")
+                stock = input("Nuevo stock (Enter para no cambiar): ")
+
+                if descripcion:
+                    prod["descripcion"] = descripcion
+                if precio:
+                    try:
+                        prod["precio"] = float(precio)
+                    except ValueError:
+                        print("Precio inválido.")
+                if stock:
+                    try:
+                        prod["stock"] = int(stock)
+                    except ValueError:
+                        print("Stock inválido.")
+
+                productos[i] = prod
+                json_file.save(productos)
+                print("Producto actualizado correctamente.")
+                break
+        else:
+            print("Producto no encontrado.")
+        input("Presione una tecla para continuar...")
+
     def delete(self):
-        pass
-    
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(red_color + "Eliminar Producto" + reset_color)
+        id = input("Ingrese ID del producto a eliminar: ")
+        json_file = JsonFile(path+'/archivos/products.json')
+        productos = json_file.read()
+        for i, prod in enumerate(productos):
+            if prod["id"] == int(id):
+                confirm = input(f"¿Eliminar producto {prod['descripcion']}? (s/n): ").lower()
+                if confirm == "s":
+                    productos.pop(i)
+                    json_file.save(productos)
+                    print("Producto eliminado correctamente.")
+                else:
+                    print("Operación cancelada.")
+                break
+        else:
+            print("Producto no encontrado.")
+        input("Presione una tecla para continuar...")
+
     def consult(self):
-        pass
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2, 1); print(green_color + "Consulta de Productos" + reset_color)
+        json_file = JsonFile(path+'/archivos/products.json')
+        productos = json_file.read()
+        for prod in productos:
+            print(f"{prod['id']}  {prod['descripcion']}  ${prod['precio']}  Stock: {prod['stock']}")
+        input("Presione una tecla para continuar...")
 
 class CrudSales(ICrud):
     def create(self):
@@ -229,33 +385,35 @@ while opc !='4':
     if opc == "1":
         opc1 = ''
         while opc1 !='5':
-            borrarPantalla()    
+            borrarPantalla()  
+            customer = CrudClients()  
             menu_clients = Menu("Menu Cientes",["1) Ingresar","2) Actualizar","3) Eliminar","4) Consultar","5) Salir"],20,10)
             opc1 = menu_clients.menu()
             if opc1 == "1":
-                pass
+                customer.create()
             elif opc1 == "2":
-                pass
+                customer.update()
             elif opc1 == "3":
-                pass
+                customer.delete()
             elif opc1 == "4":
-                pass
+                customer.consult()
             print("Regresando al menu Clientes...")
             # time.sleep(2)            
     elif opc == "2":
         opc2 = ''
         while opc2 !='5':
-            borrarPantalla()    
+            borrarPantalla()   
+            product = CrudProducts() 
             menu_products = Menu("Menu Productos",["1) Ingresar","2) Actualizar","3) Eliminar","4) Consultar","5) Salir"],20,10)
             opc2 = menu_products.menu()
             if opc2 == "1":
-                pass
+                product.create()
             elif opc2 == "2":
-                pass
+                product.update()
             elif opc2 == "3":
-                pass
+                product.delete()
             elif opc2 == "4":
-                pass
+                product.consult()
     elif opc == "3":
         opc3 =''
         while opc3 !='5':

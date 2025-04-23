@@ -61,5 +61,36 @@
                 "cantidad": 2
             }
         ]
+    },
+    {
+        "factura": 4,
+        "Fecha": "2025-04-23",
+        "cliente": "Jair Martillo",
+        "subtotal": 58.9,
+        "descuento": 5.890000000000001,
+        "iva": 6.36,
+        "total": 59.37,
+        "detalle": [
+            {
+                "poducto": "aceite",
+                "precio": 2.0,
+                "cantidad": 2
+            },
+            {
+                "poducto": "Coca Cola",
+                "precio": 1.5,
+                "cantidad": 2
+            },
+            {
+                "poducto": "Mortadela",
+                "precio": 2.5,
+                "cantidad": 1
+            },
+            {
+                "poducto": "Leche",
+                "precio": 0.95,
+                "cantidad": 52
+            }
+        ]
     }
 ]

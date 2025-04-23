@@ -1,14 +1,32 @@
 [
-  {
-    "dni":"09",
-    "nombre":"Daniel",
-    "apellido":"Vera",
-    "valor": 0.10
-  },
-  {
-    "dni": "0914192144",
-    "nombre": "Dayanna",
-    "apellido": "Vera",
-    "valor": 10000
-  }
+    {
+        "dni": "09",
+        "nombre": "Daniel",
+        "apellido": "Vera",
+        "valor": 0.1
+    },
+    {
+        "dni": "0914192144",
+        "nombre": "Dayanna",
+        "apellido": "Vera",
+        "valor": 10000
+    },
+    {
+        "dni": "0350194577",
+        "nombre": "Erick",
+        "apellido": "Martillo",
+        "valor": 2.5
+    },
+    {
+        "dni": "0959545662",
+        "nombre": "Karina",
+        "apellido": "Pacheco",
+        "valor": 1000.0
+    },
+    {
+        "dni": "0350337762",
+        "nombre": "Jair",
+        "apellido": "Martillo",
+        "valor": 500.0
+    }
 ]

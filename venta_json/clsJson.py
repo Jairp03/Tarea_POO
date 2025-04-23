@@ -1,26 +1,15 @@
-import json
-class JsonFile:
+from abc import ABC, abstractmethod
+
+class InterfaceJson(ABC):
     def __init__(self, filename):
         self.filename = filename
 
+    @abstractmethod
     def save(self, data):
-        with open(self.filename, 'w') as file:
-            json.dump(data, file, indent=4)# dump:graba datos a un archivo json
-      
+        pass
+    @abstractmethod  
     def read(self):
-        try:
-            with open(self.filename,'r') as file:
-                data = json.load(file)# load:carga datos desde un archivo json
-        except FileNotFoundError:
-            data = []
-        return data
-     
+        pass
+    @abstractmethod 
     def find(self,atributo,buscado):
-        try:
-            with open(self.filename,'r') as file:
-                datas = json.load(file)
-                data = [item for item in datas if item[atributo] == buscado ]
-        except FileNotFoundError:
-            data = []
-        return data
-    
+        pass
