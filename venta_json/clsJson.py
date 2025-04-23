@@ -5,7 +5,7 @@ class JsonFile:
 
     def save(self, data):
         with open(self.filename, 'w') as file:
-            json.dump(data, file)# dump:graba datos a un archivo json
+            json.dump(data, file, indent=4)# dump:graba datos a un archivo json
       
     def read(self):
         try:

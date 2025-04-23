@@ -104,7 +104,10 @@ class CrudSales(ICrud):
             # print(sale.getJson())  
             json_file = JsonFile(path+'/archivos/invoices.json')
             invoices = json_file.read()
-            ult_invoices = invoices[-1]["factura"]+1
+            if invoices:
+                ult_invoices = invoices[-1]["factura"] + 1
+            else:
+                ult_invoices = 1
             data = sale.getJson()
             data["factura"]=ult_invoices
             invoices.append(data)
@@ -114,11 +117,74 @@ class CrudSales(ICrud):
             gotoxy(20,10+line);print("🤣 Venta Cancelada 🤣"+reset_color)    
         time.sleep(2)    
     
-    def update():
-        pass
+    def update(self):
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2,1);print(green_color+"*"*90+reset_color)
+        gotoxy(30,2);print(blue_color+"Actualizar Venta"+reset_color)
+        gotoxy(2,4);invoice = input("Ingrese número de factura a actualizar: ")
     
-    def delete():
-        pass
+        if not invoice.isdigit():
+            print("Número inválido.")
+            return
+
+        invoice = int(invoice)
+        json_file = JsonFile(path+'/archivos/invoices.json')
+        invoices = json_file.read()
+
+        for i, venta in enumerate(invoices):
+            if venta["factura"] == invoice:
+                gotoxy(2,6);print(f"Factura encontrada: {venta}")
+                gotoxy(2,10);nuevo_cliente = input("Nuevo nombre del cliente (Enter para no cambiar): ")
+                gotoxy(2,12);nuevo_total = input("Nuevo total (Enter para no cambiar): ")
+
+                if nuevo_cliente:
+                    venta["cliente"] = nuevo_cliente
+                if nuevo_total:
+                    try:
+                        venta["total"] = float(nuevo_total)
+                    except ValueError:
+                        print("Total inválido. No se cambió.")
+
+                invoices[i] = venta
+                json_file.save(invoices)
+                gotoxy(2,14);print(green_color+"Venta actualizada correctamente."+reset_color)
+                break
+        else:
+            gotoxy(2,6);print(red_color+"Factura no encontrada."+reset_color)
+
+        input("Presione una tecla para continuar...")
+    
+    def delete(self):
+        borrarPantalla()
+        print('\033c', end='')
+        gotoxy(2,1);print(red_color+"*"*90+reset_color)
+        gotoxy(30,2);print(red_color+"Eliminar Venta"+reset_color)
+        gotoxy(2,4);invoice = input("Ingrese número de factura a eliminar: ")
+
+        if not invoice.isdigit():
+            gotoxy(2,6);print("Número inválido.")
+            return
+
+        invoice = int(invoice)
+        json_file = JsonFile(path+'/archivos/invoices.json')
+        invoices = json_file.read()
+
+        for i, venta in enumerate(invoices):
+            if venta["factura"] == invoice:
+                gotoxy(2,6);print(f"Factura encontrada: {venta}")
+                gotoxy(2,8);confirm = input("¿Está seguro que desea eliminar esta venta? (s/n): ").lower()
+                if confirm == 's':
+                    invoices.pop(i)
+                    json_file.save(invoices)
+                    gotoxy(2,10);print(red_color+"Venta eliminada correctamente."+reset_color)
+                else:
+                    gotoxy(2,10);print("Operación cancelada.")
+                break
+        else:
+            gotoxy(2,6);print(red_color+"Factura no encontrada."+reset_color)
+
+        input("Presione una tecla para continuar...")
     
     def consult(self):
         print('\033c', end='')
@@ -202,6 +268,14 @@ while opc !='4':
                 
             elif opc3 == "2":
                 sales.consult()
+                time.sleep(2)
+            
+            elif opc3 == "3":
+                sales.update()
+                time.sleep(2)
+            
+            elif opc3 == "4":
+                sales.delete()
                 time.sleep(2)
      
     print("Regresando al menu Principal...")
